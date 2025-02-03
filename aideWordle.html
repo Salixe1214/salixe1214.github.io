@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<a href=index.html>Acceuil</a>
+
+<p>
+  Indicate the possible content of eache place in the designated field.
+  Ex, if I have an_me and I know I can have the letters a, n, m, i, u and e in the third place I would fill the inputs (represented by the brackets, don't use actual brackets) like this: <br>
+  First Place: [a]<br>
+  Second Place: [n]<br>
+  Third Place: [anmiue]<br>
+  Fourth Place: [m]<br>
+  Fifth Place: [e]<br><br>
+  Yellow letters*: [i]<br><br>
+
+  The yellow letters are the letters that needs to be in the word.
+</p>
+
+<form id="frm1" action="">
+  First Place: <input type="text" name="one" value=""><br>
+  Second Place: <input type="text" name="two" value=""><br>
+  Third Place: <input type="text" name="tree" value=""><br>
+  Fourth Place: <input type="text" name="four" value=""><br>
+  Fifth Place: <input type="text" name="five" value=""><br><br>
+  Yellow Letters: <input type="text" name="ylw" value=""><br><br>
+</form>
+
+<p>Click "Evaluate" to display the possible letter arrangement.</p>
+
+<button onclick="myFunction()">Evaluate</button>
+
+<p id="demo"></p>
+
+<script>
+function chars(string){
+  return Array.from(String(string))
+}
+function valid(string, list){
+  console.log(string);
+  for (let i = 0; i < list.length; i++){
+    console.log(list[i]);
+    if(!(string.includes(list[i]))){
+      return false;
+    }
+  }
+  return true
+}
+function myFunction() {
+  var x = document.getElementById("frm1");
+  var l1, l2, l3, l4, l5, yl, tmp;
+  let text = "<ul>";
+  l1 = chars(x.elements[0].value)
+  l2 = chars(x.elements[1].value)
+  l3 = chars(x.elements[2].value)
+  l4 = chars(x.elements[3].value)
+  l5 = chars(x.elements[4].value)
+  yl = chars(x.elements[5].value)
+  for (let i = 0; i < l1.length; i++){
+    for (let j = 0; j < l2.length; j++){
+      for (let k = 0; k < l3.length; k++){
+        for (let l = 0; l < l4.length; l ++){
+          for (let m = 0; m < l5.length; m++){
+            tmp = l1[i] + l2[j] + l3[k] + l4[l] + l5[m]
+            if(valid(tmp, yl)){
+              text += "<li>" + tmp + "</li>";
+            }
+          }
+        }
+      }
+    }
+  }
+  text += "</ul>";
+  document.getElementById("demo").innerHTML = text;
+}
+</script>
+
+</body>
+</html>

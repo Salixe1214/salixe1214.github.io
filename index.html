@@ -1,64 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Random Anime Picker</title>
-</head>
-<body>
-    <h1>Random Anime Picker</h1>
-    <button onclick="pickRandomAnime()">Pick a Random Anime</button>
-    <div id="result"></div>
+    <title>Bienvenue sur le site de salixe</title>
+    <!-- The style.css file allows you to change the look of your web pages.
+         If you include the next line in all your web pages, they will all share the same look.
+         This makes it easier to make new pages for your site. -->
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body>
+    <h1>Bienvenue sur mon site Web!</h1>
 
-    <script>
-        async function pickRandomAnime() {
-            const username = "salixe1214"; // Replace with your MyAnimeList username
-            const resultDiv = document.getElementById('result');
+    <p>Voici ce qu'on peut y faire:</p>
 
-            // Show loading message
-            resultDiv.textContent = "Loading...";
+    <ul>
+      <li><a href="aideWordle.html">Aide pour wordle</a></li>
+      <li><a href="animePicker.html">Selection alétatoire d'anime</a> dans ma liste à regarder</li>
+    </ul>
 
-            try {
-                // Fetch the anime list and pick a random anime
-                const anime = await pickAnime(username);
-                resultDiv.textContent = `Your random anime is: ${anime}`;
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.textContent = "Failed to fetch anime. Please try again.";
-            }
-        }
+    <p><a href=/aaa.html>Test</a></p>
 
-        async function pickAnime(username) {
-          const url = `https://myanimelist.net/animelist/${username}?status=6`;
-          const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`; // Use AllOrigins proxy
+    <p>Bientôt sur ce site:</p>
 
-          console.log('Fetching from proxy:', proxyUrl);
+    <ul>
+      <li>Des billets d'humeur</li>
+      <li>Des nouvelles de mon jardins</li>
+      <li>Des mise à jour sur le dévoloppement de mes divers jeux</li>
+    </ul>
 
-          try {
-              const response = await fetch(proxyUrl);
-              console.log("response")
-              console.log(response)
-              const html = await response.text(); // Extract the HTML content from the proxy response
-
-              // Extract anime titles from the HTML
-              const animelistRaw = html.split('&quot;,&quot;anime_title_eng&quot;:&quot;').slice(0, -1);
-              const animeList = animelistRaw.map(item =>
-                  item.replace(/&#039;/g, "'")
-                      .replace(/\\u2606/g, '-')
-                      .replace(/\\u221a/g, 'root ')
-                      .replace(/\\u00bd/g, '1/2')
-                      .replace(/\\\//g, '/')
-                      .split(';')
-                      .pop()
-              );
-
-              // Return a random anime from the list
-              return animeList[Math.floor(Math.random() * animeList.length)];
-          } catch (error) {
-              console.error('Error fetching anime list:', error);
-              throw error; // Re-throw the error to handle it in pickRandomAnime
-          }
-      }
-    </script>
-</body>
+    <img src="/neocities.png">
+  </body>
 </html>
