@@ -4,4 +4,7 @@ body {
 
 .menu  {
   background-color: #bdcebe;
+  color: #eca1a6;
+  border: 2px #d6cbd3;
+  border-style: groove;
 }
