@@ -1,10 +1,50 @@
 body {
-  background-color: #ada397;
+  background-color: var(--brun);
 }
 
-.menu  {
-  background-color: #bdcebe;
+ul.menu  {
+  background-color: var(--bleu);
   color: black;
-  border: 2px #eca1a6;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li.menu {
+  float: left;
+}
+
+li.menu a.menu {
+  display: block;
+  color: black;
+  background-color: var(--violet);
+  text-align: center;
+  padding: 4px 6px;
+  text-decoration: none;
+  border: 2px var(--vert);
   border-style: groove;
+}
+
+li.menu a.menu:hover {
+  background-color: var(--vert);
+}
+
+.active {
+  display: block;
+  color: black;
+  background-color: var(--vert);
+  text-align: center;
+  padding: 4px 6px;
+  text-decoration: none;
+  border: 2px var(--vert);
+  border-style: groove;
+}
+
+:root {
+  --bleu: #55879e;
+  --violet: #d09ecf;
+  --mauve: #d1abb2;
+  --brun: #c4b79c;
+  --vert: #c1dbb6;
 }
