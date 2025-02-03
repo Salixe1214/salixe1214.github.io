@@ -4,5 +4,6 @@ body {
 
 .menu  {
   background-color: #bdcebe;
-  color: #eca1a6
+  color: #eca1a6;
+  border: 2px #d6cbd3;
 }
