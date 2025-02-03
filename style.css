@@ -7,4 +7,6 @@ body {
   color: black;
   border: 2px #eca1a6;
   border-style: groove;
+  width: 300px;
+  margin: auto;
 }
