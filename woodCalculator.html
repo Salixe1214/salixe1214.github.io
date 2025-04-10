@@ -36,29 +36,16 @@
 <p id="demo"></p>
 
 <script>
-function chars(string){
-  return Array.from(String(string))
-}
-function valid(string, list){
-  console.log(string);
-  for (let i = 0; i < list.length; i++){
-    console.log(list[i]);
-    if(!(string.includes(list[i]))){
-      return false;
-    }
-  }
-  return true
-}
 function myFunction() {
   var x = document.getElementById("frm1");
   var log, oak, wil, map, sta, pin;
   let text = "<ul>Total de ";
-  log = chars(x.elements[0].value)
-  oak = chars(x.elements[1].value)
-  wil = chars(x.elements[2].value)
-  map = chars(x.elements[3].value)
-  sta = chars(x.elements[4].value)
-  pin = chars(x.elements[5].value)
+  log = x.elements[0].value
+  oak = x.elements[1].value
+  wil = x.elements[2].value
+  map = x.elements[3].value
+  sta = x.elements[4].value
+  pin = x.elements[5].value
   text += (2*log) + (3*oak) + (4*wil) + (5*map) + (6*sta) + (7*pin);
   text += " heat.</ul>";
   document.getElementById("demo").innerHTML = text;
