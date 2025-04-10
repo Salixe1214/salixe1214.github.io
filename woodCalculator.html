@@ -26,7 +26,8 @@
   Willow: <input type="number" name="tree" value=""><br>
   Maple: <input type="number" name="four" value=""><br>
   Stardust: <input type="number" name="five" value=""><br>
-  Pine: <input type="number" name="six" value=""><br><br>
+  Pine: <input type="number" name="six" value=""><br>
+  Readwood: <input type="number" name="seven" value=""><br><br>
 </form>
 
 <p>Click "Evaluate" to display the total heat.</p>
@@ -38,7 +39,7 @@
 <script>
 function myFunction() {
   var x = document.getElementById("frm1");
-  var log, oak, wil, map, sta, pin;
+  var log, oak, wil, map, sta, pin, red;
   let text = "<ul>Total de ";
   log = x.elements[0].value
   oak = x.elements[1].value
@@ -46,7 +47,8 @@ function myFunction() {
   map = x.elements[3].value
   sta = x.elements[4].value
   pin = x.elements[5].value
-  text += (2*log) + (3*oak) + (4*wil) + (5*map) + (6*sta) + (7*pin);
+  red = x.elements[6].value
+  text += (2*log) + (3*oak) + (4*wil) + (5*map) + (6*sta) + (7*pin) + (8*red);
   text += " heat.</ul>";
   document.getElementById("demo").innerHTML = text;
 }
