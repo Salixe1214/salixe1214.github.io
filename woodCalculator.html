@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <h1>Aide pour Wordle</h1>
+
+<ul class="menu">
+  <li class="menu"><a href="index.html" class="menu">Acceuil</a></li>
+  <li class="menu"><a href="aideWordle.html" class="menu">Wordle</a></li>
+  <li class="menu"><a href="animePicker.html" class="menu">Anime</a></li>
+  <li class="menu"><a href="portfolio.html" class="menu">Portfolio</a></li>
+  <li class="menu"><a href="woodCalculator.html" class="active">Wood Calculator</a></li>
+</ul>
+
+<p>
+  Calculate the heat given by your wood in idle-pixel
+
+  The yellow letters are the letters that needs to be in the word.
+</p>
+
+<form id="frm1" action="">
+  Logs: <input type="number" name="one" value=""><br>
+  Oak: <input type="number" name="two" value=""><br>
+  Willow: <input type="number" name="tree" value=""><br>
+  Maple: <input type="number" name="four" value=""><br>
+  Stardust: <input type="number" name="five" value=""><br>
+  Pine: <input type="number" name="six" value=""><br><br>
+</form>
+
+<p>Click "Evaluate" to display the total heat.</p>
+
+<button onclick="myFunction()">Evaluate</button>
+
+<p id="demo"></p>
+
+<script>
+function chars(string){
+  return Array.from(String(string))
+}
+function valid(string, list){
+  console.log(string);
+  for (let i = 0; i < list.length; i++){
+    console.log(list[i]);
+    if(!(string.includes(list[i]))){
+      return false;
+    }
+  }
+  return true
+}
+function myFunction() {
+  var x = document.getElementById("frm1");
+  var log, oak, wil, map, sta, pin;
+  let text = "<ul>Total de ";
+  log = chars(x.elements[0].value)
+  oak = chars(x.elements[1].value)
+  wil = chars(x.elements[2].value)
+  map = chars(x.elements[3].value)
+  sta = chars(x.elements[4].value)
+  pin = chars(x.elements[5].value)
+  text += (2*log) + (3*oak) + (4*wil) + (5*map) + (6*sta) + (7*pin);
+  text += " heat.</ul>";
+  document.getElementById("demo").innerHTML = text;
+}
+</script>
+
+</body>
+</html>
