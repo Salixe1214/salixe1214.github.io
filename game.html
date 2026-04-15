@@ -54,19 +54,21 @@
     setInterval(addPts, 100, tick_rate);
     setInterval(saveData, 10000);
 
-    window.addEventListener("keydown", stimulus);
-    window.addEventListener("touchstart", stimulus);
+    window.addEventListener("keydown", stimulusStart);
+    window.addEventListener("touchstart", stimulusStart);
 
-    window.addEventListener("keyup", function (event) {
-      canPress = true;
-    });
+    window.addEventListener("keyup", stimulusEnd);
+    window.addEventListener("touchend", stimulusEnd);
 
     // Functions
-    function stimulus(event){
+    function stimulusStart(event){
       if(canPress){
         addPts(click_rate);
         canPress = false;
       };
+    };
+    function stimulusEnd(event){
+      canPress = true;
     };
 
     function addPts(n){
