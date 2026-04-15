@@ -3,7 +3,8 @@ let menu_els = {
   'Wordle': "aideWordle.html",
   'Anime': "animePicker.html",
   'Portfolio': "portfolio.html",
-  'Wood Calculator': "woodCalculator.html"
+  'Wood Calculator': "woodCalculator.html",
+  'Jeu': "game.html"
 };
 let head_el = document.getElementById("headers");
 
