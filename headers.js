@@ -1,5 +1,5 @@
 let menu_els = {
-  'Acceuil': "index.html",
+  'Accueil': "index.html",
   'Wordle': "aideWordle.html",
   'Anime': "animePicker.html",
   'Portfolio': "portfolio.html",
