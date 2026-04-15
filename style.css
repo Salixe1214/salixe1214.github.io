@@ -41,6 +41,10 @@ li.menu a.menu:hover {
   border-style: groove;
 }
 
+var {
+  font-style: normal;
+}
+
 :root {
   --bleu: #55879e;
   --violet: #d09ecf;

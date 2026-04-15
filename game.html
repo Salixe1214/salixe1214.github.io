@@ -18,21 +18,31 @@
 
   <p>
     Pétit jeu pr l'plaisir!
+    <br>
+    Appuis sur une touche du clavier pour augmenter tes points.
   </p>
-  <label>Points: <div id="pts">0</div></label>
+  <label>Points: <var id="pts">0</var></label>
+  <hr>
+  <label>Tick rate: <var id="tick">0</var>/s</label>
+  <br>
+  <label>Click rate: <var id="click">0</var></label>
   <script>
     // Variables
     let pts = 0;
+    let click_rate = 1;
+    let tick_rate = 0.1;
     let pts_el = document.getElementById("pts");
+    let tick_el = document.getElementById("tick");
+    let click_el = document.getElementById("click");
     let canPress = true;
 
     // Events
-    setInterval(addPts, 100, 0.1);
+    setInterval(addPts, 100, tick_rate);
 
     window.addEventListener("keydown", function (event) {
       // Then display the event.key
       if(canPress){
-        addPts(1);
+        addPts(click_rate);
         canPress = false;
       };
     });
@@ -46,5 +56,9 @@
       pts = pts + n;
       pts_el.textContent = pts.toFixed(0);
     };
+
+    // Autre
+    tick_el.textContent = tick_rate;
+    click_el.textContent = click_rate;
   </script>
 </html>
