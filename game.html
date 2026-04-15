@@ -16,6 +16,7 @@
     <script src="headers.js"></script>
   </body>
 
+<p id="demo"></p>
   <p>
     Pétit jeu pr l'plaisir!
     <br>
@@ -26,18 +27,32 @@
   <label>Tick rate: <var id="tick">0</var>/s</label>
   <br>
   <label>Click rate: <var id="click">0</var></label>
+  <hr>
+  <label>Dernière sauvegarde: <var id="time_save"></var></label>
+
   <script>
     // Variables
-    let pts = 0;
-    let click_rate = 1;
-    let tick_rate = 0.1;
+    let pts = localStorage.getItem("pts") != null ? Number(localStorage.getItem("pts")) : 0;
+    let click_rate = localStorage.getItem("click_rate") != null ?  Number(localStorage.getItem("click_rate")) : 1;
+    let tick_rate = localStorage.getItem("tick_rate") != null ?  Number(localStorage.getItem("tick_rate")) : 0.1;
+
     let pts_el = document.getElementById("pts");
+    pts_el.textContent = pts.toFixed(0);
+
     let tick_el = document.getElementById("tick");
+    tick_el.textContent = tick_rate;
+
     let click_el = document.getElementById("click");
+    click_el.textContent = click_rate;
+
+    let time_save_el = document.getElementById("time_save");
+    saveData();
+
     let canPress = true;
 
     // Events
     setInterval(addPts, 100, tick_rate);
+    setInterval(saveData, 10000);
 
     window.addEventListener("keydown", function (event) {
       // Then display the event.key
@@ -54,7 +69,15 @@
     // Functions
     function addPts(n){
       pts = pts + n;
+
       pts_el.textContent = pts.toFixed(0);
+    };
+
+    function saveData() {
+      localStorage.setItem("pts", pts);
+      localStorage.setItem("click_rate", click_rate);
+      localStorage.setItem("tick_rate", tick_rate);
+      time_save_el.innerText = (new Date(Date.now())).toString();
     };
 
     // Autre
