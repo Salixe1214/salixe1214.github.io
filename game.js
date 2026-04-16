@@ -43,6 +43,8 @@ window.addEventListener("touchstart", stimulusStart);
 window.addEventListener("keyup", stimulusEnd);
 window.addEventListener("touchend", stimulusEnd);
 
+window.addEventListener("unload", saveData);
+
 reset_btn.addEventListener("click", resetGame);
 save_btn.addEventListener("click", saveData);
 
