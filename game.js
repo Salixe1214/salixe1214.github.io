@@ -58,7 +58,6 @@ function stimulusEnd(event){
 };
 
 function addPts(n){
-  console.log("Adding " + n);
   pts = pts + n;
 
   pts_el.textContent = pts.toFixed(0);
