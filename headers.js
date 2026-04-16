@@ -4,7 +4,7 @@ let menu_els = {
   'Anime': "animePicker.html",
   'Portfolio': "portfolio.html",
   'Wood Calculator': "woodCalculator.html",
-  'Jeu': "game/game.html"
+  'Jeu': "game.html"
 };
 let head_el = document.getElementById("headers");
 

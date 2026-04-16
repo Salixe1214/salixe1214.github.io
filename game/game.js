@@ -44,6 +44,9 @@ window.addEventListener("keyup", stimulusEnd);
 window.addEventListener("touchend", stimulusEnd);
 
 window.addEventListener("unload", saveData);
+window.addEventListener("message", function (event) {
+  console.log(event.data.message);
+});
 
 reset_btn.addEventListener("click", resetGame);
 save_btn.addEventListener("click", saveData);
