@@ -50,9 +50,13 @@ function draw() {
 };
 
 function adjustVelocity() {
-  if(Math.abs(velocity.x) === speed && Math.abs(velocity.y) === speed){
-    velocity.x = velocity.x * (Math.sqrt(2)/2);
-    velocity.y = velocity.y * (Math.sqrt(2)/2);
+  if(Math.abs(velocity.x) === Math.abs(velocity.y) && velocity.x != 0){
+    velocity.x = speed * (velocity.x / Math.abs(velocity.x)) * (Math.sqrt(2)/2);
+    velocity.y = speed * (velocity.y / Math.abs(velocity.y)) * (Math.sqrt(2)/2);
+  } else if (Math.abs(velocity.x) === speed * (Math.sqrt(2)/2)) {
+    velocity.x = speed * (velocity.x / Math.abs(velocity.x));
+  } else if (Math.abs(velocity.y) === speed * (Math.sqrt(2)/2)) {
+    velocity.y = speed * (velocity.y / Math.abs(velocity.y));
   }
 };
 
