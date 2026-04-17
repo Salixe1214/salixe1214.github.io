@@ -12,7 +12,21 @@ A faire
 - [ ] Minijeu de pêche
 
 ### Shop
-- Garder le shop en iframe
-- Utiliser le localStorage du shop pour gérer ce qui est acheté et pas
-- Utiliser des send message pour dire au jeux d'augmenter le tick rate, les pts ou le click rate (voir game.js:47) `window.postMessage({sender: "me", message: "allo"}, "*")`
-- Ajouter un sendMessage au clear et au save pour que le shop se clear/save en meme temp que le jeu
+- ~~Garder le shop en iframe~~ -> Tout en une seule page. G/n/rer le HTML avec JS?
+- Utiliser le localStorage du shop pour gérer ce qui est acheté et pas:
+```json
+{
+  item: {
+    prix: 1111,
+    tick_upgrade: 0.1,
+    click_upgrade: 0,
+    disponible: 1
+  },
+  item2: {
+    prix: 543,
+    tick_upgrade: 0.0,
+    click_upgrade: 4,
+    disponible: 0
+  }
+}
+```
