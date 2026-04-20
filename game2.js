@@ -5,16 +5,64 @@ setInterval(gameTick, 1);
 window.addEventListener("keydown", keyPressed);
 window.addEventListener("keyup", keyUp);
 
-let position = {
-  x: 200,
-  y: 200
-};
-let velocity = {
-  x: 0,
-  y: 0
-};
+
+class Vector2 {
+  constructor(x = 0, y = 0){
+    this.x = x;
+    this.y = y;
+  }
+}
+let velocity = new Vector2(0,0);
+let position = new Vector2(200, 200);
+
 let rad = 40
 speed = 5;
+
+class RectWall {
+  constructor(start = new Vector2(0,0), end = new Vector2(0,0), color="black") {
+    this.start = start;
+    this.end = end;
+    this.color = color;
+  }
+
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.strokeStyle = this.color;
+    ctx.stroke();
+    ctx.fillRect(this.start.x, this.start.y, this.end.x - this.start.x, this.end.y - this.start.y);
+    ctx.beginPath();
+    ctx.moveTo(this.start.x - 5, this.start.y - 5);
+    ctx.lineTo(this.end.x + 5, this.start.y - 5);
+    ctx.lineTo(this.end.x + 5, this.end.y + 5);
+    ctx.lineTo(this.start.x - 5, this.end.y + 5);
+    ctx.lineTo(this.start.x - 5, this.start.y - 5);
+    ctx.stroke();
+  }
+
+  is_inside_x(point = new Vector2(0, 0), delta = 0, velo =0){
+    if(point.y + delta > this.start.y - 5 && point.y - delta < this.end.y + 5){
+      if(point.x + delta + velo > this.start.x - 5 && point.x - delta + velo < this.end.x + 5){
+        return true;
+      };
+    };
+    return false;
+  }
+
+  is_inside_y(point = new Vector2(0, 0), delta = 0, velo = 0){
+    if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
+      if(point.y + delta + velo > this.start.y - 5 && point.y - delta + velo < this.end.y + 5){
+        return true;
+      };
+    };
+    return false;
+  }
+}
+
+let walls = [
+  new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
+  new RectWall(new Vector2(500, 250), new Vector2(570, 300)),
+  new RectWall(new Vector2(50, 300), new Vector2(150, 300), "red")
+];
 
 function gameTick() {
   physics();
@@ -42,32 +90,16 @@ function physics() {
 };
 
 function canMoveX() {
-  if(position.y + rad > 95 && position.y - rad < 155){
-    if(position.x + rad + velocity.x > 295 && position.x - rad + velocity.x < 405){
-      return false;
-    };
-  };
-
-  if(position.y + rad > 245 && position.y - rad < 305){
-    if(position.x + rad + velocity.x > 495 && position.x - rad + velocity.x < 575){
-      return false;
-    };
+  for(let id in walls){
+    if(walls[id].is_inside_x(position, rad, velocity.x)){return false;};
   };
 
   return true;
 }
 
 function canMoveY() {
-  if(position.x + rad > 295 && position.x - rad < 405){
-    if(position.y + rad + velocity.y > 95 && position.y - rad + velocity.y < 155){
-      return false;
-    };
-  };
-
-  if(position.x + rad > 495 && position.x - rad < 575){
-    if(position.y + rad + velocity.y > 245 && position.y - rad + velocity.y < 305){
-      return false;
-    };
+  for(let id in walls){
+    if(walls[id].is_inside_y(position, rad, velocity.y)){return false;};
   };
 
   return true;
@@ -77,28 +109,12 @@ function draw() {
   ctx.fillStyle = "white"
   ctx.fillRect(0, 0, 640, 480);
 
-  ctx.fillStyle = "black"
-  ctx.stroke()
-  ctx.fillRect(300, 100, 100, 50);
-  ctx.beginPath();
-  ctx.moveTo(295, 95);
-  ctx.lineTo(405, 95);
-  ctx.lineTo(405, 155);
-  ctx.lineTo(295, 155);
-  ctx.lineTo(295, 95);
-  ctx.stroke();
+  for(let id in walls){
+    walls[id].draw();
+  };
 
-  ctx.stroke()
-  ctx.fillRect(500, 250, 70, 50);
-  ctx.beginPath();
-  ctx.moveTo(495, 245);
-  ctx.lineTo(575, 245);
-  ctx.lineTo(575, 305);
-  ctx.lineTo(495, 305);
-  ctx.lineTo(495, 245);
-  ctx.stroke();
-
-  ctx.fillStyle = "black"
+  ctx.fillStyle = "black";
+  ctx.strokeStyle = "black";
   ctx.beginPath();
   ctx.arc(position.x, position.y, rad, 0, 2 * Math.PI);
   ctx.stroke();
