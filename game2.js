@@ -28,7 +28,6 @@ class RectWall {
   draw() {
     ctx.fillStyle = this.color;
     ctx.strokeStyle = this.color;
-    ctx.stroke();
     ctx.fillRect(this.start.x, this.start.y, this.end.x - this.start.x, this.end.y - this.start.y);
     ctx.beginPath();
     ctx.moveTo(this.start.x - 5, this.start.y - 5);
@@ -56,12 +55,22 @@ class RectWall {
     };
     return false;
   }
+
+  on_ground(point = new Vector2(0, 0), delta = 0, velo = 0){
+    if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
+      if(point.y + delta + velo + 5 > this.start.y - 5 && point.y - delta + velo < this.start.y + 5){
+        return true;
+      };
+    };
+    return false;
+  }
 }
 
 let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
   new RectWall(new Vector2(500, 250), new Vector2(570, 300)),
-  new RectWall(new Vector2(50, 300), new Vector2(150, 300), "red")
+  new RectWall(new Vector2(50, 300), new Vector2(150, 350), "red"),
+  new RectWall(new Vector2(0, 460), new Vector2(640, 480), "blue")
 ];
 
 function gameTick() {
@@ -71,7 +80,7 @@ function gameTick() {
 
 function physics() {
   adjustVelocity();
-
+  velocity.y += 0.49;
   if(canMoveX()){position.x += velocity.x;};
   if(canMoveY()){position.y += velocity.y;};
 
@@ -99,7 +108,10 @@ function canMoveX() {
 
 function canMoveY() {
   for(let id in walls){
-    if(walls[id].is_inside_y(position, rad, velocity.y)){return false;};
+    if(walls[id].is_inside_y(position, rad, velocity.y)){
+      velocity.y = 0;
+      return false;
+    };
   };
 
   return true;
@@ -132,14 +144,14 @@ function adjustVelocity() {
 };
 
 function keyPressed (event) {
-  if(event.code === 'KeyW'){
-    velocity.y = -speed;
+  if(event.code === 'KeyW' && isOnGround()){
+    velocity.y = -speed * 3;
   };
   if(event.code === 'KeyA'){
     velocity.x = -speed;
   };
   if(event.code === 'KeyS'){
-    velocity.y = speed;
+    velocity.y = speed * 3;
   };
   if(event.code === 'KeyD'){
     velocity.x = speed;
@@ -159,4 +171,13 @@ function keyUp (event) {
   if(event.code === 'KeyD'){
     velocity.x = velocity.x > 0 ? 0 : velocity.x;
   }
+};
+
+function isOnGround() {
+  for(let i in walls){
+    if(walls[i].on_ground(position, rad, velocity.y)){
+      return true;
+    };
+  };
+  return false;
 };
