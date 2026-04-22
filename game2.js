@@ -1,7 +1,12 @@
 let map = document.getElementById('map');
 let ctx = map.getContext('2d');
 
-setInterval(gameTick, 1);
+let surface = "air";
+let refresh_rate = 600;  // In frame per second
+let now = Date.now();
+let delta = 0;
+
+setInterval(gameTick, 1000 / refresh_rate);
 window.addEventListener("keydown", keyPressed);
 window.addEventListener("keyup", keyUp);
 
@@ -11,12 +16,18 @@ class Vector2 {
     this.x = x;
     this.y = y;
   }
+
+  to_s(){
+    return this.x + "\n" + this.y
+  }
 }
 let velocity = new Vector2(0,0);
 let position = new Vector2(200, 200);
 
 let rad = 40
-speed = 5;
+let speed = 500;
+let jumpSpeedModif = 3;
+let gravity = 9807/2;
 
 class RectWall {
   constructor(start = new Vector2(0,0), end = new Vector2(0,0), color="black") {
@@ -41,15 +52,17 @@ class RectWall {
   is_inside_x(point = new Vector2(0, 0), delta = 0, velo =0){
     if(point.y + delta > this.start.y - 5 && point.y - delta < this.end.y + 5){
       if(point.x + delta + velo > this.start.x - 5 && point.x - delta + velo < this.end.x + 5){
+        surface = "wall";
         return true;
       };
     };
     return false;
   }
 
-  is_inside_y(point = new Vector2(0, 0), delta = 0, velo = 0){
+  on_ceil(point = new Vector2(0, 0), delta = 0, velo = 0){
     if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
-      if(point.y + delta + velo > this.start.y - 5 && point.y - delta + velo < this.end.y + 5){
+      if(point.y - delta + velo < this.end.y + 5 && point.y + delta > this.end.y + 5){
+        surface = "ceil";
         return true;
       };
     };
@@ -58,7 +71,8 @@ class RectWall {
 
   on_ground(point = new Vector2(0, 0), delta = 0, velo = 0){
     if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
-      if(point.y + delta + velo + 5 > this.start.y - 5 && point.y - delta + velo < this.start.y + 5){
+      if(point.y + delta + velo > this.start.y - 5 && point.y - delta < this.start.y - 5){
+        surface = "ground";
         return true;
       };
     };
@@ -74,15 +88,17 @@ let walls = [
 ];
 
 function gameTick() {
+  delta = (Date.now() - now)/1000;
+  now = Date.now();
   physics();
   draw();
 };
 
 function physics() {
-  adjustVelocity();
-  velocity.y += 0.49;
-  if(canMoveX()){position.x += velocity.x;};
-  if(canMoveY()){position.y += velocity.y;};
+  velocity.y += gravity * delta;
+  surface = "air";
+  if(canMoveX()){position.x += velocity.x * delta;};
+  if(canMoveY()){position.y += velocity.y * delta;};
 
   if(position.y + rad > 480){
     position.y = 480 - rad;
@@ -100,7 +116,9 @@ function physics() {
 
 function canMoveX() {
   for(let id in walls){
-    if(walls[id].is_inside_x(position, rad, velocity.x)){return false;};
+    if(walls[id].is_inside_x(position, rad, velocity.x * delta)){
+      return false;
+    };
   };
 
   return true;
@@ -108,7 +126,10 @@ function canMoveX() {
 
 function canMoveY() {
   for(let id in walls){
-    if(walls[id].is_inside_y(position, rad, velocity.y)){
+    if(
+      walls[id].on_ceil(position, rad, velocity.y * delta) ||
+      walls[id].on_ground(position, rad, velocity.y * delta)
+    ){
       velocity.y = 0;
       return false;
     };
@@ -130,28 +151,23 @@ function draw() {
   ctx.beginPath();
   ctx.arc(position.x, position.y, rad, 0, 2 * Math.PI);
   ctx.stroke();
-};
 
-function adjustVelocity() {
-  if(Math.abs(velocity.x) === Math.abs(velocity.y) && velocity.x != 0){
-    velocity.x = speed * (velocity.x / Math.abs(velocity.x)) * (Math.sqrt(2)/2);
-    velocity.y = speed * (velocity.y / Math.abs(velocity.y)) * (Math.sqrt(2)/2);
-  } else if (Math.abs(velocity.x) === speed * (Math.sqrt(2)/2)) {
-    velocity.x = speed * (velocity.x / Math.abs(velocity.x));
-  } else if (Math.abs(velocity.y) === speed * (Math.sqrt(2)/2)) {
-    velocity.y = speed * (velocity.y / Math.abs(velocity.y));
-  }
+  ctx.font = "30px Arial";
+  ctx.fillText(surface, 15, 45);
+  ctx.fillText(delta, 15, 90);
+  ctx.fillText("x: " + velocity.x, 15, 135);
+  ctx.fillText("y: " + velocity.y, 15, 180);
 };
 
 function keyPressed (event) {
   if(event.code === 'KeyW' && isOnGround()){
-    velocity.y = -speed * 3;
+    velocity.y = -speed * jumpSpeedModif;
   };
   if(event.code === 'KeyA'){
     velocity.x = -speed;
   };
   if(event.code === 'KeyS'){
-    velocity.y = speed * 3;
+    velocity.y = speed;
   };
   if(event.code === 'KeyD'){
     velocity.x = speed;
@@ -175,7 +191,7 @@ function keyUp (event) {
 
 function isOnGround() {
   for(let i in walls){
-    if(walls[i].on_ground(position, rad, velocity.y)){
+    if(walls[i].on_ground(position, rad, speed * delta)){
       return true;
     };
   };
