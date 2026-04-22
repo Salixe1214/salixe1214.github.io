@@ -80,12 +80,79 @@ class RectWall {
   }
 }
 
+let coins_count = 0;
+
+class Coin {
+  constructor(position = new Vector2(0,0), radius = 1, color="yellow") {
+    this.position = position;
+    this.radius = radius;
+    this.color = color;
+    this.id = coins_count;
+    coins_count += 1;
+  }
+
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.strokeStyle = "black";
+    ctx.beginPath();
+    ctx.arc(this.position.x, this.position.y, this.radius + 1, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+    ctx.stroke();
+  }
+
+  is_inside(point = new Vector2(0, 0), delta = 0, velo =0){
+    if(
+      point.y + delta > this.position.y - this.radius - 5 &&
+      point.y - delta < this.position.y + this.radius + 5 &&
+      point.x + delta > this.position.x - this.radius - 5 &&
+      point.x - delta < this.position.x + this.radius + 5
+    ){
+      return true;
+    };
+    return false;
+  }
+}
+
 let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
   new RectWall(new Vector2(500, 250), new Vector2(570, 300)),
   new RectWall(new Vector2(50, 300), new Vector2(150, 350), "red"),
   new RectWall(new Vector2(0, 460), new Vector2(640, 480), "blue")
 ];
+
+let coins = [
+  // On wall 1
+  new Coin(new Vector2(350, 87), 5),
+  new Coin(new Vector2(325, 87), 5),
+  new Coin(new Vector2(375, 87), 5),
+  // On wall 2
+  new Coin(new Vector2(517, 250 - 13), 5),
+  new Coin(new Vector2(535, 250 - 13), 5),
+  new Coin(new Vector2(553, 250 - 13), 5),
+  // On wall 3
+  new Coin(new Vector2(75, 300 - 13), 5),
+  new Coin(new Vector2(100, 300 - 13), 5),
+  new Coin(new Vector2(125, 300 - 13), 5),
+  // On floor (wall 4)
+  new Coin(new Vector2(40, 440), 5),
+  new Coin(new Vector2(80, 440), 5),
+  new Coin(new Vector2(120, 440), 5),
+  new Coin(new Vector2(160, 440), 5),
+  new Coin(new Vector2(200, 440), 5),
+  new Coin(new Vector2(240, 440), 5),
+  new Coin(new Vector2(280, 440), 5),
+  new Coin(new Vector2(320, 440), 5),
+  new Coin(new Vector2(360, 440), 5),
+  new Coin(new Vector2(400, 440), 5),
+  new Coin(new Vector2(440, 440), 5),
+  new Coin(new Vector2(480, 440), 5),
+  new Coin(new Vector2(520, 440), 5),
+  new Coin(new Vector2(560, 440), 5),
+  new Coin(new Vector2(600, 440), 5)
+];
+
+let collectedCoins = 0;
 
 function gameTick() {
   delta = (Date.now() - now)/1000;
@@ -99,6 +166,8 @@ function physics() {
   surface = "air";
   if(canMoveX()){position.x += velocity.x * delta;};
   if(canMoveY()){position.y += velocity.y * delta;};
+
+  coinsCollide();
 
   if(position.y + rad > 480){
     position.y = 480 - rad;
@@ -138,25 +207,43 @@ function canMoveY() {
   return true;
 }
 
+function coinsCollide() {
+  let processed_coins = [];
+  for(let id in coins){
+    if(!coins[id].is_inside(position, rad, velocity.x * delta)){
+      processed_coins.push(coins[id]);
+    } else{
+      collectedCoins += 1;
+    };
+  };
+
+  coins = processed_coins;
+}
+
 function draw() {
   ctx.fillStyle = "white"
   ctx.fillRect(0, 0, 640, 480);
 
-  for(let id in walls){
-    walls[id].draw();
+  for(let wall_id in walls){
+    walls[wall_id].draw();
   };
 
-  ctx.fillStyle = "black";
+  for(let coin_id in coins){
+    coins[coin_id].draw();
+  };
+
+  ctx.fillStyle = "green";
   ctx.strokeStyle = "black";
   ctx.beginPath();
   ctx.arc(position.x, position.y, rad, 0, 2 * Math.PI);
+  ctx.fill()
+  ctx.arc(position.x, position.y, rad-1, 0, 2 * Math.PI);
   ctx.stroke();
 
+  ctx.fillStyle = "black";
   ctx.font = "30px Arial";
-  ctx.fillText(surface, 15, 45);
-  ctx.fillText(delta, 15, 90);
-  ctx.fillText("x: " + velocity.x, 15, 135);
-  ctx.fillText("y: " + velocity.y, 15, 180);
+  ctx.fillText("Coins: " + collectedCoins, 15, 45);
+  ctx.fillText(surface, 15, 90);
 };
 
 function keyPressed (event) {
