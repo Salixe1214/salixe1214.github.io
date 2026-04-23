@@ -1,8 +1,12 @@
+let wall_count = 0;
+
 class RectWall {
   constructor(start = new Vector2(0,0), end = new Vector2(0,0), color="black") {
     this.start = start;
     this.end = end;
     this.color = color;
+    this.id = wall_count;
+    wall_count += 1;
   }
 
   draw() {
@@ -71,21 +75,33 @@ class RectWall {
   }
 
   collision(position = new Vector2(0,0), radius = 0, velo = new Vector2(0,0)){
-    // Return the new position of the colided
-    let colX = position.x;
-    let colY = position.y;
-    if(this.collide_left(position, radius, velo.x * delta)){
-      colX = this.start.x - radius;
+    let test = new Vector2(position.x, position.y);
+
+    if(position.x < this.start.x){
+      test.x = this.start.x;
+    } else if(position.x > this.end.x){
+      test.x = this.end.x;
     };
-    if(this.collide_right(position, radius, velo.x * delta)){
-      colX = this.end.x + radius;
-    }
-    if(this.collide_floor(position, radius, velo.y * delta)){
-      colY = this.start.y - radius;
+
+    if(position.y < this.start.y){
+      test.y = this.start.y;
+    } else if(position.y > this.end.y){
+      test.y = this.end.y;
     };
-    if(this.collide_ceil(position, radius, velo.y * delta)){
-      colY = this.end.y + radius;
-    }
-    return new Vector2(colX, colY);
+
+    let distVect = new Vector2(position.x - test.x, position.y - test.y);
+    let dist = distVect.length();
+
+    if (dist <= radius){
+      let angleVector = new Vector2(test.x - position.x, test.y - position.y);
+      let angle = Math.acos((angleVector.x) / angleVector.length()) || 0;
+      if(angleVector.y < 0){angle = -angle;};
+      let x = test.x - (radius * Math.cos(angle));
+      let y = test.y - (radius * Math.sin(angle));
+
+      return new Vector2(x, y);
+    };
+
+    return position;
   }
 }
