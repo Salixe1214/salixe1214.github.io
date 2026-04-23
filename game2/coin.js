@@ -19,15 +19,11 @@ class Coin {
     ctx.stroke();
   }
 
-  is_inside(point = new Vector2(0, 0), delta = 0, velo =0){
-    if(
-      point.y + delta > this.position.y - this.radius - 5 &&
-      point.y - delta < this.position.y + this.radius + 5 &&
-      point.x + delta > this.position.x - this.radius - 5 &&
-      point.x - delta < this.position.x + this.radius + 5
-    ){
-      return true;
-    };
-    return false;
+  is_inside(point = new Vector2(0, 0), delta = 0, velo = new Vector2(0,0)){
+    let pointsVect = new Vector2(
+      this.position.x - (point.x - velo.x),
+      this.position.y - (point.y - velo.y)
+    );
+    return pointsVect.length() <= delta;
   }
 }

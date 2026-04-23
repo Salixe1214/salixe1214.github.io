@@ -29,7 +29,7 @@ let velocity = new Vector2(0,0);
 let position = new Vector2(200, 200);
 
 let rad = 40
-let speed = 500;
+let speed = 50;
 let jumpSpeedModif = 3;
 let gravity = 9807/2;
 
@@ -164,7 +164,7 @@ function wallCollide() {
 function coinsCollide() {
   let processed_coins = [];
   for(let id in coins){
-    if(!coins[id].is_inside(position, rad, velocity.x * delta)){
+    if(!coins[id].is_inside(position, rad, velocity)){
       processed_coins.push(coins[id]);
     } else{
       collectedCoins += 1;
