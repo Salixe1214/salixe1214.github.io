@@ -29,7 +29,7 @@ let velocity = new Vector2(0,0);
 let position = new Vector2(200, 200);
 
 let rad = 40
-let speed = 50;
+let speed = 500;
 let jumpSpeedModif = 3;
 let gravity = 9807/2;
 
@@ -81,8 +81,8 @@ function gameTick() {
 };
 
 function physics() {
-  velocity.y += gravity * delta;
   surface = "air";
+  velocity.y += gravity * delta;
   position.x += velocity.x * delta;
   position.y += velocity.y * delta;
 
@@ -129,30 +129,6 @@ function draw() {
   ctx.fillText(surface, 15, 90);
 };
 
-function canMoveX() {
-  for(let id in walls){
-    if(walls[id].is_inside_x(position, rad, velocity.x * delta)){
-      return false;
-    };
-  };
-
-  return true;
-}
-
-function canMoveY() {
-  for(let id in walls){
-    if(
-      walls[id].on_ceil(position, rad, velocity.y * delta) ||
-      walls[id].on_ground(position, rad, velocity.y * delta)
-    ){
-      velocity.y = 0;
-      return false;
-    };
-  };
-
-  return true;
-}
-
 function wallCollide() {
   for(let id in walls){
     collision = walls[id].collision(position, rad, velocity);
@@ -164,7 +140,7 @@ function wallCollide() {
 function coinsCollide() {
   let processed_coins = [];
   for(let id in coins){
-    if(!coins[id].is_inside(position, rad, velocity)){
+    if(!coins[id].is_inside(position, rad, new Vector2(velocity.x * delta, velocity.y * delta))){
       processed_coins.push(coins[id]);
     } else{
       collectedCoins += 1;

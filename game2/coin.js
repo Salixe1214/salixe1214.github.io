@@ -24,6 +24,6 @@ class Coin {
       this.position.x - (point.x - velo.x),
       this.position.y - (point.y - velo.y)
     );
-    return pointsVect.length() <= delta;
+    return pointsVect.length() <= delta + this.radius;
   }
 }
