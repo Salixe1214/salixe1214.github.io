@@ -2,14 +2,13 @@ let map = document.getElementById('map');
 let ctx = map.getContext('2d');
 
 let surface = "air";
-let refresh_rate = 600;  // In frame per second
+let refresh_rate = 60;  // In frame per second
 let now = Date.now();
 let delta = 0;
 
 setInterval(gameTick, 1000 / refresh_rate);
 window.addEventListener("keydown", keyPressed);
 window.addEventListener("keyup", keyUp);
-
 
 class Vector2 {
   constructor(x = 0, y = 0){
@@ -21,6 +20,7 @@ class Vector2 {
     return this.x + "\n" + this.y
   }
 }
+
 let velocity = new Vector2(0,0);
 let position = new Vector2(200, 200);
 
@@ -28,91 +28,6 @@ let rad = 40
 let speed = 500;
 let jumpSpeedModif = 3;
 let gravity = 9807/2;
-
-class RectWall {
-  constructor(start = new Vector2(0,0), end = new Vector2(0,0), color="black") {
-    this.start = start;
-    this.end = end;
-    this.color = color;
-  }
-
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.strokeStyle = this.color;
-    ctx.fillRect(this.start.x, this.start.y, this.end.x - this.start.x, this.end.y - this.start.y);
-    ctx.beginPath();
-    ctx.moveTo(this.start.x - 5, this.start.y - 5);
-    ctx.lineTo(this.end.x + 5, this.start.y - 5);
-    ctx.lineTo(this.end.x + 5, this.end.y + 5);
-    ctx.lineTo(this.start.x - 5, this.end.y + 5);
-    ctx.lineTo(this.start.x - 5, this.start.y - 5);
-    ctx.stroke();
-  }
-
-  is_inside_x(point = new Vector2(0, 0), delta = 0, velo =0){
-    if(point.y + delta > this.start.y - 5 && point.y - delta < this.end.y + 5){
-      if(point.x + delta + velo > this.start.x - 5 && point.x - delta + velo < this.end.x + 5){
-        surface = "wall";
-        return true;
-      };
-    };
-    return false;
-  }
-
-  on_ceil(point = new Vector2(0, 0), delta = 0, velo = 0){
-    if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
-      if(point.y - delta + velo < this.end.y + 5 && point.y + delta > this.end.y + 5){
-        surface = "ceil";
-        return true;
-      };
-    };
-    return false;
-  }
-
-  on_ground(point = new Vector2(0, 0), delta = 0, velo = 0){
-    if(point.x + delta > this.start.x - 5 && point.x - delta < this.end.x + 5){
-      if(point.y + delta + velo > this.start.y - 5 && point.y - delta < this.start.y - 5){
-        surface = "ground";
-        return true;
-      };
-    };
-    return false;
-  }
-}
-
-let coins_count = 0;
-
-class Coin {
-  constructor(position = new Vector2(0,0), radius = 1, color="yellow") {
-    this.position = position;
-    this.radius = radius;
-    this.color = color;
-    this.id = coins_count;
-    coins_count += 1;
-  }
-
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.strokeStyle = "black";
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.radius + 1, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-    ctx.stroke();
-  }
-
-  is_inside(point = new Vector2(0, 0), delta = 0, velo =0){
-    if(
-      point.y + delta > this.position.y - this.radius - 5 &&
-      point.y - delta < this.position.y + this.radius + 5 &&
-      point.x + delta > this.position.x - this.radius - 5 &&
-      point.x - delta < this.position.x + this.radius + 5
-    ){
-      return true;
-    };
-    return false;
-  }
-}
 
 let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
@@ -164,9 +79,10 @@ function gameTick() {
 function physics() {
   velocity.y += gravity * delta;
   surface = "air";
-  if(canMoveX()){position.x += velocity.x * delta;};
-  if(canMoveY()){position.y += velocity.y * delta;};
+  position.x += velocity.x * delta;
+  position.y += velocity.y * delta;
 
+  wallCollide();
   coinsCollide();
 
   if(position.y + rad > 480){
@@ -182,43 +98,6 @@ function physics() {
     position.x = 640 - rad;
   };
 };
-
-function canMoveX() {
-  for(let id in walls){
-    if(walls[id].is_inside_x(position, rad, velocity.x * delta)){
-      return false;
-    };
-  };
-
-  return true;
-}
-
-function canMoveY() {
-  for(let id in walls){
-    if(
-      walls[id].on_ceil(position, rad, velocity.y * delta) ||
-      walls[id].on_ground(position, rad, velocity.y * delta)
-    ){
-      velocity.y = 0;
-      return false;
-    };
-  };
-
-  return true;
-}
-
-function coinsCollide() {
-  let processed_coins = [];
-  for(let id in coins){
-    if(!coins[id].is_inside(position, rad, velocity.x * delta)){
-      processed_coins.push(coins[id]);
-    } else{
-      collectedCoins += 1;
-    };
-  };
-
-  coins = processed_coins;
-}
 
 function draw() {
   ctx.fillStyle = "white"
@@ -245,6 +124,51 @@ function draw() {
   ctx.fillText("Coins: " + collectedCoins, 15, 45);
   ctx.fillText(surface, 15, 90);
 };
+
+function canMoveX() {
+  for(let id in walls){
+    if(walls[id].is_inside_x(position, rad, velocity.x * delta)){
+      return false;
+    };
+  };
+
+  return true;
+}
+
+function canMoveY() {
+  for(let id in walls){
+    if(
+      walls[id].on_ceil(position, rad, velocity.y * delta) ||
+      walls[id].on_ground(position, rad, velocity.y * delta)
+    ){
+      velocity.y = 0;
+      return false;
+    };
+  };
+
+  return true;
+}
+
+function wallCollide() {
+  for(let id in walls){
+    collision = walls[id].collision(position, rad, velocity);
+    if(collision.y != position.y){velocity.y = 0;};
+    position = collision;
+  };
+}
+
+function coinsCollide() {
+  let processed_coins = [];
+  for(let id in coins){
+    if(!coins[id].is_inside(position, rad, velocity.x * delta)){
+      processed_coins.push(coins[id]);
+    } else{
+      collectedCoins += 1;
+    };
+  };
+
+  coins = processed_coins;
+}
 
 function keyPressed (event) {
   if(event.code === 'KeyW' && isOnGround()){
@@ -278,7 +202,8 @@ function keyUp (event) {
 
 function isOnGround() {
   for(let i in walls){
-    if(walls[i].on_ground(position, rad, speed * delta)){
+    if(walls[i].collide_floor(position, rad + 5, speed * delta)){
+      surface = "floor"
       return true;
     };
   };
