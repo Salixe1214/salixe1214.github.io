@@ -81,8 +81,7 @@ function gameTick() {
 };
 
 function physics() {
-  surface = "air";
-  velocity.y += gravity * delta;
+  if(!isOnGround())velocity.y += gravity * delta;
   position.x += velocity.x * delta;
   position.y += velocity.y * delta;
 
@@ -130,11 +129,28 @@ function draw() {
 };
 
 function wallCollide() {
+  surface = "air";
   for(let id in walls){
     collision = walls[id].collision(position, rad, velocity);
-    if(collision.y != position.y){velocity.y = 0;};
+    if(walls[id].floor || walls[id].ceil){
+      velocity.y = 0;
+      if(walls[id].floor){
+        surface = "floor";
+      };
+      if(walls[id].ceil){
+        surface = "ceil";
+      };
+    }else{
+      if(walls[id].right){
+        surface = "right";
+      };
+      if(walls[id].left){
+        surface = "left";
+      };
+    };
     position = collision;
   };
+  console.log("2: " + velocity.y);
 }
 
 function coinsCollide() {
@@ -182,7 +198,7 @@ function keyUp (event) {
 
 function isOnGround() {
   for(let i in walls){
-    if(walls[i].collide_floor(position, rad + 5, speed * delta)){
+    if(walls[i].floor){
       surface = "floor"
       return true;
     };

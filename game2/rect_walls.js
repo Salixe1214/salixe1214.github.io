@@ -6,6 +6,10 @@ class RectWall {
     this.end = end;
     this.color = color;
     this.id = wall_count;
+    this.floor = false;
+    this.ceil = false;
+    this.left = false;
+    this.right = false;
     wall_count += 1;
   }
 
@@ -22,70 +26,26 @@ class RectWall {
     ctx.stroke();
   }
 
-  betweenX(position = new Vector2(0,0), radius){
-    if(position.x + radius > this.start.x && position.x - radius < this.end.x){
-      return true;
-    }
-  }
-
-  betweenY(position = new Vector2(0,0), radius){
-    if(position.y + radius > this.start.y && position.y - radius < this.end.y){
-      return true;
-    }
-  }
-
-  collide_right(position = new Vector2(0,0), radius = 0, velo = 0){
-    let positionLeft = position.x - radius;
-    if(this.betweenY(position, radius)){
-      if(positionLeft > this.end.x + velo - 5 && positionLeft < this.end.x){
-        return true;
-      };
-    };
-    return false;
-  }
-
-  collide_left(position = new Vector2(0,0), radius = 0, velo = 0){
-    let positionRight = position.x + radius;
-    if(this.betweenY(position, radius)){
-      if(positionRight < this.start.x + velo + 5 && positionRight > this.start.x){
-        return true;
-      };
-    };
-    return false;
-  }
-
-  collide_floor(position = new Vector2(0,0), radius = 0, velo = 0){
-    let positionBot = position.y + radius;
-    if(this.betweenX(position, radius)){
-      if(positionBot < this.start.y + velo + 5 && positionBot > this.start.y){
-        return true;
-      };
-    };
-    return false;
-  }
-
-  collide_ceil(position = new Vector2(0,0), radius = 0, velo = 0){
-    let positionTop = position.y - radius;
-    if(this.betweenX(position, radius)){
-      if(positionTop > this.end.y + velo - 5 && positionTop < this.end.y){
-        return true;
-      };
-    };
-    return false;
-  }
-
   collision(position = new Vector2(0,0), radius = 0, velo = new Vector2(0,0)){
     let test = new Vector2(position.x, position.y);
+    this.floor = false;
+    this.ceil = false;
+    this.left = false;
+    this.right = false;
 
     if(position.x < this.start.x){
+      this.left = true;
       test.x = this.start.x;
     } else if(position.x > this.end.x){
+      this.right = true;
       test.x = this.end.x;
     };
 
     if(position.y < this.start.y){
+      this.floor = true;
       test.y = this.start.y;
     } else if(position.y > this.end.y){
+      this.ceil = true;
       test.y = this.end.y;
     };
 
@@ -100,6 +60,11 @@ class RectWall {
       let y = test.y - (radius * Math.sin(angle));
 
       return new Vector2(x, y);
+    }else{
+      this.floor = false;
+      this.ceil = false;
+      this.left = false;
+      this.right = false;
     };
 
     return position;
