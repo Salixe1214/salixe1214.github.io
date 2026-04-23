@@ -19,6 +19,10 @@ class Vector2 {
   to_s(){
     return this.x + "\n" + this.y
   }
+
+  length(){
+    return Math.sqrt((this.x * this.x) + (this.y * this.y));
+  }
 }
 
 let velocity = new Vector2(0,0);
