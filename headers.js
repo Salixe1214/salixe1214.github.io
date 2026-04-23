@@ -5,7 +5,7 @@ let menu_els = {
   'Portfolio': "/portfolio.html",
   'Wood Calculator': "/woodCalculator.html",
   'Jeu': "/game/game.html",
-  'Jeu 2': "/game2.html"
+  'Jeu 2': "/game/game2.html"
 };
 let head_el = document.getElementById("headers");
 
