@@ -37,7 +37,9 @@ let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
   new RectWall(new Vector2(500, 250), new Vector2(570, 300)),
   new RectWall(new Vector2(50, 300), new Vector2(150, 350), "red"),
-  new RectWall(new Vector2(0, 460), new Vector2(640, 480), "blue")
+  new RectWall(new Vector2(0, 460), new Vector2(640, 480), "blue"),
+  new RectWall(new Vector2(600, 350), new Vector2(640, 480), "brown"),
+  new RectWall(new Vector2(300, 350), new Vector2(340, 480), "brown")
 ];
 
 let coins = [
