@@ -88,12 +88,12 @@ function gameTick() {
   now = Date.now();
   physics();
   draw();
-};
+}
 
 function physics() {
   player.physics();
   camera.physics();
-};
+}
 
 function draw() {
   ctx.fillStyle = "white"
@@ -101,22 +101,22 @@ function draw() {
 
   for(let wall_id in walls){
     walls[wall_id].draw();
-  };
+  }
 
   for(let coin_id in coins){
     coins[coin_id].draw();
-  };
+  }
 
   player.draw();
-};
+}
 
 function keyPressed (event) {
   console.log(event);
   player.keyDown(event);
   camera.keyDown(event);
-};
+}
 
 function keyUp (event) {
   player.keyUp(event);
   camera.keyUp(event);
-};
+}
