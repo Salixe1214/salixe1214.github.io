@@ -10,12 +10,17 @@ class Coin {
   }
 
   draw() {
+    let drawPosition = new Vector2(
+      this.position.x - camera.position.x,
+      this.position.y - camera.position.y
+    );
+
     ctx.fillStyle = this.color;
     ctx.strokeStyle = "black";
     ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.radius + 1, 0, 2 * Math.PI);
+    ctx.arc(drawPosition.x, drawPosition.y, this.radius + 1, 0, 2 * Math.PI);
     ctx.fill();
-    ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+    ctx.arc(drawPosition.x, drawPosition.y, this.radius, 0, 2 * Math.PI);
     ctx.stroke();
   }
 

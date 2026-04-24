@@ -14,15 +14,28 @@ class RectWall {
   }
 
   draw() {
+    let drawStart = new Vector2(
+      this.start.x - camera.position.x,
+      this.start.y - camera.position.y
+    );
+    let drawEnd = new Vector2(
+      this.end.x - camera.position.x,
+      this.end.y - camera.position.y
+    );
     ctx.fillStyle = this.color;
     ctx.strokeStyle = this.color;
-    ctx.fillRect(this.start.x + 5, this.start.y + 5, this.end.x - this.start.x - 10, this.end.y - this.start.y - 10);
+    ctx.fillRect(
+      drawStart.x + 5,
+      drawStart.y + 5,
+      drawEnd.x - drawStart.x - 10,
+      drawEnd.y - drawStart.y - 10
+    );
     ctx.beginPath();
-    ctx.moveTo(this.start.x, this.start.y);
-    ctx.lineTo(this.end.x, this.start.y);
-    ctx.lineTo(this.end.x, this.end.y);
-    ctx.lineTo(this.start.x, this.end.y);
-    ctx.lineTo(this.start.x, this.start.y);
+    ctx.moveTo(drawStart.x, drawStart.y);
+    ctx.lineTo(drawEnd.x, drawStart.y);
+    ctx.lineTo(drawEnd.x, drawEnd.y);
+    ctx.lineTo(drawStart.x, drawEnd.y);
+    ctx.lineTo(drawStart.x, drawStart.y);
     ctx.stroke();
   }
 

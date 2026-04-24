@@ -13,7 +13,6 @@ class Vector2 {
   }
 }
 
-
 let map = document.getElementById('map');
 let ctx = map.getContext('2d');
 let refresh_rate = 60;  // In frame per second
@@ -64,7 +63,8 @@ let coins = [
   new Coin(new Vector2(600, 440), 5)
 ];
 
-let player = new Player();
+let camera = new Camera();
+let player = new Player(new Vector2(150,150));
 
 function gameTick() {
   delta = (Date.now() - now)/1000;
@@ -75,11 +75,12 @@ function gameTick() {
 
 function physics() {
   player.physics();
+  camera.physics();
 };
 
 function draw() {
   ctx.fillStyle = "white"
-  ctx.fillRect(0, 0, 640, 480);
+  ctx.fillRect(0, 0, camera.width, camera.height);
 
   for(let wall_id in walls){
     walls[wall_id].draw();
@@ -94,8 +95,10 @@ function draw() {
 
 function keyPressed (event) {
   player.keyDown(event);
+  camera.keyDown(event);
 };
 
 function keyUp (event) {
   player.keyUp(event);
+  camera.keyUp(event);
 };

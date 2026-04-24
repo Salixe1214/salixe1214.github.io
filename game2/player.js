@@ -1,6 +1,9 @@
 class Player {
   constructor(position = new Vector2(0,0)) {
-    this.position = position;
+    this.position = new Vector2(
+      position.x - camera.position.x,
+      position.y - camera.position.y
+    );
     this.velocity = new Vector2(0,0);
     this.surface = "air";
     this.rad = 40
@@ -18,27 +21,23 @@ class Player {
     this.wallCollide();
     this.coinsCollide();
 
-    if(this.position.y + this.rad > 480){
-      this.position.y = 480 - this.rad;
-    };
-    if(this.position.y - this.rad < 0){
-      this.position.y = 0 + this.rad;
-    };
-    if(this.position.x - this.rad < 0){
-      this.position.x = 0 + this.rad;
-    };
-    if(this.position.x + this.rad > 640){
-      this.position.x = 640 - this.rad;
+    if(this.position.y > 600){
+      this.position = new Vector2(640/2, 480/2);
     };
   }
 
   draw() {
+    let drawPosition = new Vector2(
+      this.position.x - camera.position.x,
+      this.position.y - camera.position.y
+    );
+
     ctx.fillStyle = "green";
     ctx.strokeStyle = "black";
     ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.rad, 0, 2 * Math.PI);
+    ctx.arc(drawPosition.x, drawPosition.y, this.rad, 0, 2 * Math.PI);
     ctx.fill()
-    ctx.arc(this.position.x, this.position.y, this.rad-1, 0, 2 * Math.PI);
+    ctx.arc(drawPosition.x, drawPosition.y, this.rad-1, 0, 2 * Math.PI);
     ctx.stroke();
 
     ctx.fillStyle = "black";
@@ -94,6 +93,10 @@ class Player {
     };
     return false;
   };
+
+  getVelocity() {
+    return new Vector2(this.velocity.x * delta, this.velocity.y * delta);
+  }
 
   keyDown(event) {
     if(event.code === 'KeyW' && this.isOnGround()){
