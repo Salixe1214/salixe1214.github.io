@@ -26,7 +26,7 @@ class RectWall {
     ctx.stroke();
   }
 
-  collision(position = new Vector2(0,0), radius = 0, velo = new Vector2(0,0)){
+  collision(position = new Vector2(0,0), radius = 0){
     let test = new Vector2(position.x, position.y);
     this.floor = false;
     this.ceil = false;

@@ -133,7 +133,7 @@ function draw() {
 function wallCollide() {
   surface = "air";
   for(let id in walls){
-    collision = walls[id].collision(position, rad, velocity);
+    collision = walls[id].collision(position, rad);
     if(walls[id].floor || walls[id].ceil){
       velocity.y = 0;
       if(walls[id].floor){
@@ -142,6 +142,7 @@ function wallCollide() {
       if(walls[id].ceil){
         surface = "ceil";
       };
+      position.y = collision.y;
     }else{
       if(walls[id].right){
         surface = "right";
@@ -149,8 +150,8 @@ function wallCollide() {
       if(walls[id].left){
         surface = "left";
       };
+      position.x = collision.x;
     };
-    position = collision;
   };
   console.log("2: " + velocity.y);
 }
