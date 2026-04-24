@@ -99,7 +99,7 @@ class Player {
   }
 
   keyDown(event) {
-    if(event.code === 'KeyW' && this.isOnGround()){
+    if((event.code === 'KeyW' || event.code === "Space") && this.isOnGround()){
       this.velocity.y = -this.speed * this.jumpSpeedModif;
     };
     if(event.code === 'KeyA'){

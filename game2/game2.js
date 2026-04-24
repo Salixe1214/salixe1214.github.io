@@ -21,13 +21,18 @@ let delta = 0;
 
 setInterval(gameTick, 1000 / refresh_rate);
 window.addEventListener("keydown", keyPressed);
-window.addEventListener("keyup", keyUp);
+window.addEventListener("keyup", keyUp);var i = 1;
+
+let gamePadIds = [];
+window.addEventListener("gamepadconnected", function(e) {
+  gamePadIds.push(e.gamepad.index);
+});
 
 let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
   new RectWall(new Vector2(500, 250), new Vector2(570, 300)),
   new RectWall(new Vector2(50, 300), new Vector2(150, 350), "red"),
-  new RectWall(new Vector2(0, 460), new Vector2(640, 480), "blue"),
+  new RectWall(new Vector2(-500, 460), new Vector2(640, 480), "blue"),
   new RectWall(new Vector2(600, 350), new Vector2(640, 480), "brown"),
   new RectWall(new Vector2(300, 350), new Vector2(340, 480), "brown")
 ];
@@ -67,6 +72,18 @@ let camera = new Camera();
 let player = new Player(new Vector2(150,150));
 
 function gameTick() {
+  for(let i in gamePadIds) {
+    let gamePad = navigator.getGamepads()[gamePadIds[i]];
+    for(let j in gamePad.buttons) {
+      if(gamePad.buttons[j].pressed){
+        if(!pressed[btn_map[j]])keyPressed(btn_converter[btn_map[j]]);
+        pressed[btn_map[j]] = true;
+      } else {
+        if(pressed[btn_map[j]])keyUp(btn_converter[btn_map[j]]);
+        pressed[btn_map[j]] = false;
+      }
+    }
+  }
   delta = (Date.now() - now)/1000;
   now = Date.now();
   physics();
@@ -94,6 +111,7 @@ function draw() {
 };
 
 function keyPressed (event) {
+  console.log(event);
   player.keyDown(event);
   camera.keyDown(event);
 };
