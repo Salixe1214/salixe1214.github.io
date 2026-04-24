@@ -4,10 +4,6 @@ class Vector2 {
     this.y = y;
   }
 
-  to_s(){
-    return this.x + "\n" + this.y
-  }
-
   length(){
     return Math.sqrt((this.x * this.x) + (this.y * this.y));
   }
@@ -21,7 +17,7 @@ let delta = 0;
 
 setInterval(gameTick, 1000 / refresh_rate);
 window.addEventListener("keydown", keyPressed);
-window.addEventListener("keyup", keyUp);var i = 1;
+window.addEventListener("keyup", keyUp);
 
 let gamePadIds = [];
 window.addEventListener("gamepadconnected", function(e) {
