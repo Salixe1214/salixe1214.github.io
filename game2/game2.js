@@ -1,15 +1,3 @@
-let map = document.getElementById('map');
-let ctx = map.getContext('2d');
-
-let surface = "air";
-let refresh_rate = 60;  // In frame per second
-let now = Date.now();
-let delta = 0;
-
-setInterval(gameTick, 1000 / refresh_rate);
-window.addEventListener("keydown", keyPressed);
-window.addEventListener("keyup", keyUp);
-
 class Vector2 {
   constructor(x = 0, y = 0){
     this.x = x;
@@ -25,13 +13,16 @@ class Vector2 {
   }
 }
 
-let velocity = new Vector2(0,0);
-let position = new Vector2(200, 200);
 
-let rad = 40
-let speed = 500;
-let jumpSpeedModif = 3;
-let gravity = 9807/2;
+let map = document.getElementById('map');
+let ctx = map.getContext('2d');
+let refresh_rate = 60;  // In frame per second
+let now = Date.now();
+let delta = 0;
+
+setInterval(gameTick, 1000 / refresh_rate);
+window.addEventListener("keydown", keyPressed);
+window.addEventListener("keyup", keyUp);
 
 let walls = [
   new RectWall(new Vector2(300, 100), new Vector2(400, 150)),
@@ -73,7 +64,7 @@ let coins = [
   new Coin(new Vector2(600, 440), 5)
 ];
 
-let collectedCoins = 0;
+let player = new Player();
 
 function gameTick() {
   delta = (Date.now() - now)/1000;
@@ -83,25 +74,7 @@ function gameTick() {
 };
 
 function physics() {
-  if(!isOnGround())velocity.y += gravity * delta;
-  position.x += velocity.x * delta;
-  position.y += velocity.y * delta;
-
-  wallCollide();
-  coinsCollide();
-
-  if(position.y + rad > 480){
-    position.y = 480 - rad;
-  };
-  if(position.y - rad < 0){
-    position.y = 0 + rad;
-  };
-  if(position.x - rad < 0){
-    position.x = 0 + rad;
-  };
-  if(position.x + rad > 640){
-    position.x = 640 - rad;
-  };
+  player.physics();
 };
 
 function draw() {
@@ -116,95 +89,13 @@ function draw() {
     coins[coin_id].draw();
   };
 
-  ctx.fillStyle = "green";
-  ctx.strokeStyle = "black";
-  ctx.beginPath();
-  ctx.arc(position.x, position.y, rad, 0, 2 * Math.PI);
-  ctx.fill()
-  ctx.arc(position.x, position.y, rad-1, 0, 2 * Math.PI);
-  ctx.stroke();
-
-  ctx.fillStyle = "black";
-  ctx.font = "30px Arial";
-  ctx.fillText("Coins: " + collectedCoins, 15, 45);
-  ctx.fillText(surface, 15, 90);
+  player.draw();
 };
 
-function wallCollide() {
-  surface = "air";
-  for(let id in walls){
-    collision = walls[id].collision(position, rad);
-    if(walls[id].floor || walls[id].ceil){
-      velocity.y = 0;
-      if(walls[id].floor){
-        surface = "floor";
-      };
-      if(walls[id].ceil){
-        surface = "ceil";
-      };
-      position.y = collision.y;
-    }else{
-      if(walls[id].right){
-        surface = "right";
-      };
-      if(walls[id].left){
-        surface = "left";
-      };
-      position.x = collision.x;
-    };
-  };
-  console.log("2: " + velocity.y);
-}
-
-function coinsCollide() {
-  let processed_coins = [];
-  for(let id in coins){
-    if(!coins[id].is_inside(position, rad, new Vector2(velocity.x * delta, velocity.y * delta))){
-      processed_coins.push(coins[id]);
-    } else{
-      collectedCoins += 1;
-    };
-  };
-
-  coins = processed_coins;
-}
-
 function keyPressed (event) {
-  if(event.code === 'KeyW' && isOnGround()){
-    velocity.y = -speed * jumpSpeedModif;
-  };
-  if(event.code === 'KeyA'){
-    velocity.x = -speed;
-  };
-  if(event.code === 'KeyS'){
-    velocity.y = speed;
-  };
-  if(event.code === 'KeyD'){
-    velocity.x = speed;
-  };
+  player.keyDown(event);
 };
 
 function keyUp (event) {
-  if(event.code === 'KeyW'){
-    velocity.y = velocity.y < 0 ? 0 : velocity.y;
-  };
-  if(event.code === 'KeyA'){
-    velocity.x = velocity.x < 0 ? 0 : velocity.x;
-  };
-  if(event.code === 'KeyS'){
-    velocity.y = velocity.y > 0 ? 0 : velocity.y;
-  };
-  if(event.code === 'KeyD'){
-    velocity.x = velocity.x > 0 ? 0 : velocity.x;
-  }
-};
-
-function isOnGround() {
-  for(let i in walls){
-    if(walls[i].floor){
-      surface = "floor"
-      return true;
-    };
-  };
-  return false;
+  player.keyUp(event);
 };
