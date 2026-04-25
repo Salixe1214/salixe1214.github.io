@@ -9,16 +9,14 @@ class Camera {
   }
 
   physics(){
-    if(this.position.x - (this.timer.x * this.displacement) + (this.width/2) > player.position.x){
-      this.axis.x = -1;
-    } else if(this.position.x - (this.timer.x * this.displacement) + (this.width/2) < player.position.x){
-      this.axis.x = 1;
-    } else{
-      this.axis.x = 0;
-    }
-    this.timer.x += delta * this.axis.x;
+    this.axis = new Vector2(
+        player.velocity.x * delta * (50/player.speed),
+        player.velocity.y * delta * (50/player.speed)
+    );
+    this.timer.x += delta * this.axis.x * 5;
     if(this.axis.x === 0){
-      this.timer.x -= delta * (this.timer.x < 0 ? -1 : (this.timer.x > 0 ? 1 : 0));
+      this.timer.x -= delta * 5 * (this.timer.x < 0 ? -1 : (this.timer.x > 0 ? 1 : 0));
+      if(Math.abs(this.timer.x) < 0.1)this.timer.x = 0;
     }
     if(this.timer.x > 1){
       this.timer.x = 1;
@@ -27,17 +25,21 @@ class Camera {
       this.timer.x = -1;
     }
 
-    if(this.position.y > player.position.y){
-      this.axis.y = 1;
-    } else if(this.position.y < player.position.y){
-      this.axis.y = -1;
-    } else{
-      this.axis.y = 0;
+    this.timer.y += delta * this.axis.y * 5;
+    if(this.axis.y === 0){
+      this.timer.y -= delta * 5 * (this.timer.y < 0 ? -1 : (this.timer.y > 0 ? 1 : 0));
+      if(Math.abs(this.timer.y) < 0.1)this.timer.y = 0;
+    }
+    if(this.timer.y > 1){
+      this.timer.y = 1;
+    }
+    if(this.timer.y < -1){
+      this.timer.y = -1;
     }
 
     this.position = new Vector2(
       player.position.x + (this.timer.x * this.displacement) - (camera.width / 2),
-      player.position.y + (player.getVelocity().y * 2) - (camera.height / 2)
+      player.position.y + (this.timer.y * this.displacement * 0.5) - (camera.height / 2)
     );
   }
 
