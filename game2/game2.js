@@ -54,7 +54,6 @@ let coins = [
   new Coin(new Vector2(200, 440), 5),
   new Coin(new Vector2(240, 440), 5),
   new Coin(new Vector2(280, 440), 5),
-  new Coin(new Vector2(320, 440), 5),
   new Coin(new Vector2(360, 440), 5),
   new Coin(new Vector2(400, 440), 5),
   new Coin(new Vector2(440, 440), 5),
