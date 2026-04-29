@@ -9,7 +9,7 @@ class Player {
     this.rad = 40
     this.speed = 500;
     this.jumpSpeedModif = 3;
-    this.gravity = 9807/2;
+    this.gravity = 9807/(2 * 2);
     this.collectedCoins = 0;
     this.canJump = false;
     this.pressedKeys = {}
