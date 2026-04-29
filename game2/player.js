@@ -11,6 +11,8 @@ class Player {
     this.jumpSpeedModif = 3;
     this.gravity = 9807/2;
     this.collectedCoins = 0;
+    this.canJump = false;
+    this.pressedKeys = {}
   }
 
   physics() {
@@ -44,6 +46,7 @@ class Player {
     ctx.font = "30px Arial";
     ctx.fillText("Coins: " + this.collectedCoins, 15, 45);
     ctx.fillText(this.surface, 15, 90);
+    ctx.fillText(this.canJump, 15, 225);
   }
 
   wallCollide() {
@@ -88,6 +91,7 @@ class Player {
     for(let i in walls){
       if(walls[i].floor){
         this.surface = "floor"
+        this.canJump = true;
         return true;
       }
     }
@@ -99,7 +103,12 @@ class Player {
   }
 
   keyDown(event) {
-    if((event.code === 'KeyW' || event.code === "Space") && this.isOnGround()){
+    if(
+      (event.code === 'KeyW' || event.code === "Space") &&
+      this.canJump &&
+      !this.pressedKeys[event.code]
+    ){
+      this.canJump = false;
       this.velocity.y = -this.speed * this.jumpSpeedModif;
     }
     if(event.code === 'KeyA'){
@@ -111,10 +120,12 @@ class Player {
     if(event.code === 'KeyD'){
       this.velocity.x = this.speed;
     }
+    this.pressedKeys[event.code] = true;
   }
 
   keyUp(event) {
-    if(event.code === 'KeyW'){
+    if(event.code === 'KeyW' || event.code === "Space"){
+      this.canJump = false;
       this.velocity.y = this.velocity.y < 0 ? 0 : this.velocity.y;
     }
     if(event.code === 'KeyA'){
@@ -126,5 +137,6 @@ class Player {
     if(event.code === 'KeyD'){
       this.velocity.x = this.velocity.x > 0 ? 0 : this.velocity.x;
     }
+    this.pressedKeys[event.code] = false;
   }
 }
