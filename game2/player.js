@@ -45,8 +45,6 @@ class Player {
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
     ctx.fillText("Coins: " + this.collectedCoins, 15, 45);
-    ctx.fillText(this.surface, 15, 90);
-    ctx.fillText(this.canJump, 15, 225);
   }
 
   wallCollide() {
@@ -75,16 +73,19 @@ class Player {
   }
 
   coinsCollide() {
-    let processed_coins = [];
     for(let id in coins){
-      if(!coins[id].is_inside(this.position, this.rad, new Vector2(this.velocity.x * delta, this.velocity.y * delta))){
-        processed_coins.push(coins[id]);
-      } else{
+      if(
+        coins[id].is_inside(
+          this.position, this.rad,
+          new Vector2(this.velocity.x * delta,
+            this.velocity.y * delta
+          )
+        )
+      ){
         this.collectedCoins += 1;
+        coins[id].collected();
       }
     }
-
-    coins = processed_coins;
   }
 
   isOnGround() {

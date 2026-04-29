@@ -107,8 +107,6 @@ function draw() {
 
   ctx.fillStyle = "black";
   ctx.font = "30px Arial";
-  ctx.fillText(Math.round(camera.timer.x).toString(), 15, 135);
-  ctx.fillText(Math.round(camera.axis.x).toString(), 15, 180);
 }
 
 function keyPressed (event) {
