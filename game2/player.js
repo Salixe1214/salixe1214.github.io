@@ -1,9 +1,6 @@
 class Player {
   constructor(position = new Vector2(0,0)) {
-    this.position = new Vector2(
-      position.x - camera.position.x,
-      position.y - camera.position.y
-    );
+    this.position = position;
     this.velocity = new Vector2(0,0);
     this.surface = "air";
     this.rad = 40
@@ -13,22 +10,24 @@ class Player {
     this.collectedCoins = 0;
     this.canJump = false;
     this.pressedKeys = {}
+    this.coins = [];
+    this.walls = [];
   }
 
-  physics() {
+  physics(delta) {
     if(!this.isOnGround())this.velocity.y += this.gravity * delta;
     this.position.x += this.velocity.x * delta;
     this.position.y += this.velocity.y * delta;
 
-    this.wallCollide();
-    this.coinsCollide();
+    this.wallCollide(delta);
+    this.coinsCollide(delta);
 
     if(this.position.y > 600){
       this.position = new Vector2(640/2, 480/2);
     }
   }
 
-  draw() {
+  draw(delta) {
     let drawPosition = new Vector2(
       this.position.x - camera.position.x,
       this.position.y - camera.position.y
@@ -47,24 +46,24 @@ class Player {
     ctx.fillText("Coins: " + this.collectedCoins, 15, 45);
   }
 
-  wallCollide() {
+  wallCollide(delta) {
     this.surface = "air";
-    for(let id in walls){
-      let collision = walls[id].collision(this.position, this.rad);
-      if(walls[id].floor || walls[id].ceil){
+    for(let id in this.walls){
+      let collision = this.walls[id].collision(this.position, this.rad);
+      if(this.walls[id].floor || this.walls[id].ceil){
         this.velocity.y = 0;
-        if(walls[id].floor){
+        if(this.walls[id].floor){
           this.surface = "floor";
         }
-        if(walls[id].ceil){
+        if(this.walls[id].ceil){
           this.surface = "ceil";
         }
         this.position.y = collision.y;
       }else{
-        if(walls[id].right){
+        if(this.walls[id].right){
           this.surface = "right";
         }
-        if(walls[id].left){
+        if(this.walls[id].left){
           this.surface = "left";
         }
         this.position.x = collision.x;
@@ -72,10 +71,11 @@ class Player {
     }
   }
 
-  coinsCollide() {
-    for(let id in coins){
+  coinsCollide(delta) {
+    for(let id in this.coins){
+      console.log(this.coins[id]);
       if(
-        coins[id].is_inside(
+        this.coins[id].is_inside(
           this.position, this.rad,
           new Vector2(this.velocity.x * delta,
             this.velocity.y * delta
@@ -83,14 +83,14 @@ class Player {
         )
       ){
         this.collectedCoins += 1;
-        coins[id].collected();
+        this.coins[id].collected();
       }
     }
   }
 
   isOnGround() {
-    for(let i in walls){
-      if(walls[i].floor){
+    for(let i in this.walls){
+      if(this.walls[i].floor){
         this.surface = "floor"
         this.canJump = true;
         return true;
@@ -98,10 +98,6 @@ class Player {
     }
     return false;
   };
-
-  getVelocity() {
-    return new Vector2(this.velocity.x * delta, this.velocity.y * delta);
-  }
 
   keyDown(event) {
     if(
