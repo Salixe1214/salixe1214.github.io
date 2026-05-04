@@ -16,6 +16,10 @@ window.addEventListener("gamepadconnected", function(e) {
 let player = new Player(new Vector2(150,150));
 let camera = new Camera(player);
 
+window.addEventListener("unload", function() {
+  localStorage.setItem("coins", player.collectedCoins);
+});
+
 let main_room = new Room(
   player,
   [

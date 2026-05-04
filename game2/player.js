@@ -12,6 +12,10 @@ class Player {
     this.pressedKeys = {}
     this.coins = [];
     this.walls = [];
+
+    if(localStorage.getItem("coins") != null) {
+      this.collectedCoins = Number(localStorage.getItem("coins"));
+    };
   }
 
   physics(delta) {
