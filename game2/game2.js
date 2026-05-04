@@ -60,8 +60,10 @@ let main_room = new Room(
     new Coin(new Vector2(600, 440), 5)
   ]
 );
+let pause = new Pause();
+let rooms = [main_room, pause];
 
-let active_room = main_room;
+let active_room = 1;
 
 function gameTick() {
   for(let i in gamePadIds) {
@@ -84,22 +86,25 @@ function gameTick() {
 
 function physics(delta) {
   camera.physics(delta);
-  main_room.physics(delta);
+  rooms[active_room].physics(delta);
 }
 
 function draw(delta) {
-  main_room.draw(delta);
+  rooms[active_room].draw(delta);
 
   ctx.fillStyle = "black";
   ctx.font = "30px Arial";
 }
 
 function keyPressed (event) {
+  if(event.code == "Escape"){
+    active_room = active_room == 0 ? 1 : 0;
+  }
   camera.keyDown(event);
-  active_room.keyDown(event);
+  rooms[active_room].keyDown(event);
 }
 
 function keyUp (event) {
   camera.keyUp(event);
-  active_room.keyUp(event);
+  rooms[active_room].keyUp(event);
 }
