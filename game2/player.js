@@ -77,7 +77,6 @@ class Player {
 
   coinsCollide(delta) {
     for(let id in this.coins){
-      console.log(this.coins[id]);
       if(
         this.coins[id].is_inside(
           this.position, this.rad,
