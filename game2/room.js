@@ -33,4 +33,13 @@ class Room {
   keyUp(event){
     this.player.keyUp(event);
   }
+
+  onClick(event){
+  }
+
+  mouseUp(event){
+  }
+
+  onMouseMove(event) {
+  }
 }

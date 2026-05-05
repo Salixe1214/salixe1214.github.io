@@ -7,6 +7,9 @@ let delta = 0;
 setInterval(gameTick, 1000 / refresh_rate);
 window.addEventListener("keydown", keyPressed);
 window.addEventListener("keyup", keyUp);
+map.addEventListener("mousedown", onClick);
+map.addEventListener("mouseup", mouseUp);
+map.addEventListener("mousemove", onMouseMove);
 
 let gamePadIds = [];
 window.addEventListener("gamepadconnected", function(e) {
@@ -64,6 +67,7 @@ let pause = new Pause();
 let rooms = [main_room, pause];
 
 let active_room = 1;
+let prev_room = 1;
 
 function gameTick() {
   for(let i in gamePadIds) {
@@ -98,7 +102,8 @@ function draw(delta) {
 
 function keyPressed (event) {
   if(event.code == "Escape"){
-    active_room = active_room == 0 ? 1 : 0;
+    prev_room = active_room;
+    active_room = active_room == 0 ? prev_room : 0;
   }
   camera.keyDown(event);
   rooms[active_room].keyDown(event);
@@ -107,4 +112,16 @@ function keyPressed (event) {
 function keyUp (event) {
   camera.keyUp(event);
   rooms[active_room].keyUp(event);
+}
+
+function onClick (event) {
+  rooms[active_room].onClick(event);
+}
+
+function mouseUp (event) {
+  rooms[active_room].mouseUp(event);
+}
+
+function onMouseMove (event) {
+  rooms[active_room].onMouseMove(event);
 }

@@ -2,6 +2,12 @@ class Pause {
   constructor() {
     this.width = 640;
     this.height = 480;
+    this.buttons = [
+      new Button(
+        new Vector2(this.width / 2, this.height / 2),
+        new Vector2(200, 70)
+      )
+    ];
   }
 
   physics(delta){
@@ -11,27 +17,32 @@ class Pause {
     ctx.fillStyle = "white"
     ctx.fillRect(0, 0, this.width, this.height);
 
-    ctx.fillStyle = "green"
-    ctx.fillRect(
-      (this.width / 2) - 100,
-      (this.height / 2) - 35,
-      200,
-      70
-    );
-
-    ctx.fillStyle = "black";
-    ctx.font = "30px Arial";
-    ctx.fillText("PAUSE", (this.width / 2) - 50, (this.height / 2) - 5);
-    ctx.fillText(
-      player.collectedCoins + " coins",
-      (this.width / 2) - 67,
-      (this.height / 2) + 30
-    );
+    this.buttons.forEach(btn => {
+      btn.draw();
+    });
   }
 
   keyDown(event){
   }
 
   keyUp(event){
+  }
+
+  onClick(event){
+    this.buttons.forEach(btn => {
+      btn.onClick(event);
+    });
+  }
+
+  mouseUp(event){
+    this.buttons.forEach(btn => {
+      btn.mouseUp(event);
+    });
+  }
+
+  onMouseMove(event) {
+    this.buttons.forEach(btn => {
+      btn.onMouseMove(event);
+    });
   }
 }
