@@ -4,8 +4,10 @@ class Pause {
     this.height = 480;
     this.buttons = [
       new Button(
+        this.main_game,
+        "Rammasse des sous",
         new Vector2(this.width / 2, this.height / 2),
-        new Vector2(200, 70)
+        new Vector2(400, 70)
       )
     ];
   }
@@ -44,5 +46,10 @@ class Pause {
     this.buttons.forEach(btn => {
       btn.onMouseMove(event);
     });
+  }
+
+  main_game() {
+    active_room = 0;
+    prev_room = 1;
   }
 }

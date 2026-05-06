@@ -67,7 +67,7 @@ let pause = new Pause();
 let rooms = [main_room, pause];
 
 let active_room = 1;
-let prev_room = 1;
+let prev_room = 0;
 
 function gameTick() {
   for(let i in gamePadIds) {
@@ -102,8 +102,9 @@ function draw(delta) {
 
 function keyPressed (event) {
   if(event.code == "Escape"){
-    prev_room = active_room;
-    active_room = active_room == 0 ? prev_room : 0;
+    let this_room = active_room;
+    active_room = active_room == 1 ? prev_room : 1;
+    prev_room = this_room;
   }
   camera.keyDown(event);
   rooms[active_room].keyDown(event);

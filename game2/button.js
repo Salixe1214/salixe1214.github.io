@@ -1,5 +1,7 @@
 class Button{
   constructor(
+    method,
+    text = "",
     position = new Vector2(0,0),
     dim = new Vector2(0,0),
     fill_color = "green",
@@ -15,6 +17,8 @@ class Button{
     this.fill_color = fill_color;
     this.rim_color = rim_color;
     this.mouse_in = false;
+    this.method = method;
+    this.text = text;
   }
 
   draw() {
@@ -33,6 +37,18 @@ class Button{
     ctx.lineTo(this.start.x, this.end.y);
     ctx.lineTo(this.start.x, this.start.y);
     ctx.stroke();
+
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+    ctx.font = "30px Arial";
+    ctx.fillText(
+      this.text,
+      this.start.x + ((this.end.x - this.start.x) / 2),
+      this.start.y + ((this.end.y - this.start.y) / 2)
+    );
+    ctx.textBaseline = "top";
+    ctx.textAlign = "left";
   }
 
   is_inside(pos = new Vector2(0,0)) {
@@ -45,13 +61,16 @@ class Button{
   onClick(event) {
     let mouse_pos = new Vector2(event.offsetX, event.offsetY);
     if (this.is_inside(mouse_pos)) {
-      // Do things
       this.color = this.click_color;
     }
   }
 
   mouseUp(event) {
+    let mouse_pos = new Vector2(event.offsetX, event.offsetY);
     this.color = this.fill_color;
+    if (this.is_inside(mouse_pos)) {
+      this.method();
+    }
   }
 
   onMouseMove(event) {
