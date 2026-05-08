@@ -64,9 +64,10 @@ let main_room = new Room(
   ]
 );
 let pause = new Pause();
-let rooms = [main_room, pause];
+let roulette = new Roulette(player);
+let rooms = [main_room, pause, roulette];
 
-let active_room = 1;
+let active_room = 2;
 let prev_room = 0;
 
 function gameTick() {

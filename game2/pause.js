@@ -6,7 +6,13 @@ class Pause {
       new Button(
         this.main_game,
         "Rammasse des sous",
-        new Vector2(this.width / 2, this.height / 2),
+        new Vector2(this.width / 2, (this.height / 2) - 75),
+        new Vector2(400, 70)
+      ),
+      new Button(
+        this.roulette,
+        "Roulette",
+        new Vector2(this.width / 2, (this.height / 2) + 75),
         new Vector2(400, 70)
       )
     ];
@@ -50,6 +56,11 @@ class Pause {
 
   main_game() {
     active_room = 0;
+    prev_room = 1;
+  }
+
+  roulette() {
+    active_room = 2;
     prev_room = 1;
   }
 }
