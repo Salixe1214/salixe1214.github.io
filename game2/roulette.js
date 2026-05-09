@@ -46,7 +46,7 @@ class Roulette {
     let angle = (2 * (-1) * (Math.PI / 37)) + this.rot_angle;
     let prev_angle = 0;
     for (let i = 0 ; i <= 36 ; i++){
-      ctx.fillStyle = this.colors[i];
+      ctx.fillStyle = this.colors[this.cylindre[i]];
       ctx.beginPath();
       prev_angle = angle;
       angle = (2 * i * (Math.PI / 37)) + this.rot_angle;
@@ -78,7 +78,7 @@ class Roulette {
       ctx.font = "15px Arial";
       let num_angle = angle - (this.segment_angle / 2);
       ctx.fillText(
-        i,
+        this.cylindre[i],
         (camera.width / 2) + (175 * Math.cos(num_angle)),
         (camera.height / 2) + (175 * Math.sin(num_angle))
       );
