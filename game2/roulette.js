@@ -25,15 +25,32 @@ class Roulette {
       16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
     ]
 
-    this.rot_angle = 0;
     this.segment_angle = 2 * (Math.PI / 37);
-    this.rot_speed = 25;
+    this.rot_angle = (1.5 * Math.PI) + (this.segment_angle / 2);
+    this.max_rot_speed = 150;
+    this.min_rot_speed = 1.5;
+    this.rot_speed =  0;
+    this.active_number = 0;
+
+    this.radius = 100;
+    this.position = new Vector2(this.radius + 25, camera.height / 2);
+    this.arrow_size = new Vector2(10, 20);
+
+    // Btns
+    this.buttons = [
+        new Button(
+          this.startSpin,
+          "Spin!",
+          new Vector2(camera.width - 75, camera.height - 50),
+          new Vector2(100, 50)
+        )
+    ];
   }
 
   physics(delta){
-    if(this.rot_speed > 0){
-      this.rot_speed -= delta;
-    } else if (this.rot_speed < 0) this.rot_speed = 0;
+    if(this.rot_speed > this.min_rot_speed){
+      this.rot_speed -= delta * (Math.random() * this.rot_speed / 2);
+    } else if (this.rot_speed <= this.min_rot_speed) this.rot_speed = 0;
     this.rot_angle += this.rot_speed*(delta / (2 * Math.PI));
   }
 
@@ -49,24 +66,28 @@ class Roulette {
       ctx.fillStyle = this.colors[this.cylindre[i]];
       ctx.beginPath();
       prev_angle = angle;
-      angle = (2 * i * (Math.PI / 37)) + this.rot_angle;
+      angle = ((2 * i * (Math.PI / 37)) + this.rot_angle) % (2 * Math.PI);
+
+      if(angle > (1.5 * Math.PI) && (angle - this.segment_angle) < (1.5 * Math.PI)){
+        this.active_number = this.cylindre[i];
+      }
 
       ctx.arc(
-        camera.width / 2,
-        camera.height / 2,
-        200,
+        this.position.x,
+        this.position.y,
+        this.radius,
         (2 * (i-1) * (Math.PI / 37)) + this.rot_angle,
         angle
       );
 
-      ctx.moveTo(camera.width / 2, camera.height / 2);
+      ctx.moveTo(this.position.x, this.position.y);
       ctx.lineTo(
-        (camera.width / 2) + (200 * Math.cos(angle)),
-        (camera.height / 2) + (200 * Math.sin(angle))
+        (this.position.x) + (this.radius * Math.cos(angle)),
+        (this.position.y) + (this.radius * Math.sin(angle))
       );
       ctx.lineTo(
-        (camera.width / 2) + (200 * Math.cos(prev_angle)),
-        (camera.height / 2) + (200 * Math.sin(prev_angle))
+        (this.position.x) + (this.radius * Math.cos(prev_angle)),
+        (this.position.y) + (this.radius * Math.sin(prev_angle))
       );
       ctx.closePath();
       ctx.fill();
@@ -75,28 +96,37 @@ class Roulette {
       ctx.textBaseline = "middle";
       ctx.textAlign = "center";
       ctx.fillStyle = "yellow";
-      ctx.font = "15px Arial";
+      ctx.font = (3 * this.radius / 40) + "px Arial";
       let num_angle = angle - (this.segment_angle / 2);
       ctx.fillText(
         this.cylindre[i],
-        (camera.width / 2) + (175 * Math.cos(num_angle)),
-        (camera.height / 2) + (175 * Math.sin(num_angle))
+        (this.position.x) + ((7 * this.radius / 8) * Math.cos(num_angle)),
+        (this.position.y) + ((7 * this.radius / 8) * Math.sin(num_angle))
       );
     }
     ctx.fillStyle = "grey";
     ctx.beginPath();
-    ctx.moveTo((camera.width / 2) - 5, (camera.height / 2) - 215);
-    ctx.lineTo((camera.width / 2) + 5, (camera.height / 2) - 215);
-    ctx.lineTo((camera.width / 2), (camera.height / 2) - 195);
+    ctx.moveTo((this.position.x) - (this.arrow_size.x / 2), (this.position.y) - (this.radius + (3 * this.arrow_size.y / 4)));
+    ctx.lineTo((this.position.x) + (this.arrow_size.x / 2), (this.position.y) - (this.radius + (3 * this.arrow_size.y / 4)));
+    ctx.lineTo((this.position.x), (this.position.y) - (this.radius - (this.arrow_size.y / 4)));
     ctx.closePath();
     ctx.fill();
 
-    ctx.textBaseline = "top";
-    ctx.textAlign = "left";
+    ctx.fillStyle = this.colors[this.active_number];
+    ctx.fillRect(15, 10, 30,30);
+    ctx.fillStyle = "white";
+    ctx.font = "25px Arial";
+    ctx.fillText(this.active_number, 30, 27);
 
     ctx.fillStyle = "black";
     ctx.font = "30px Arial";
+    ctx.textBaseline = "top";
+    ctx.textAlign = "left";
     ctx.fillText("Coins: " + player.collectedCoins, 15, 45);
+
+    this.buttons.forEach(btn => {
+      btn.draw();
+    });
   }
 
   keyDown(event){
@@ -106,12 +136,25 @@ class Roulette {
   }
 
   onClick(event){
+    this.buttons.forEach(btn => {
+      btn.onClick(event);
+    });
   }
 
   mouseUp(event){
+    this.buttons.forEach(btn => {
+      btn.mouseUp(event);
+    });
   }
 
   onMouseMove(event) {
+    this.buttons.forEach(btn => {
+      btn.onMouseMove(event);
+    });
+  }
+
+  startSpin() {
+    roulette.rot_speed = roulette.max_rot_speed;
   }
 }
 
