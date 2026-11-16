@@ -5,7 +5,8 @@ let menu_els = {
   'Portfolio': "/portfolio.html",
   'Wood Calculator': "/woodCalculator.html",
   'Jeu': "/game/game.html",
-  'Jeu 2': "/game2/game2.html"
+  'Jeu 2': "/game2/game2.html",
+  'Jeu 3': "/test_godot/Nouveau projet de jeu.html"
 };
 let head_el = document.getElementById("headers");
 
